@@ -1,10 +1,6 @@
 # ⚡ Autonomous Grid Telemetry Node
 
-<p align="left">
-  <img src="https://shields.io" alt="Python">
-  <img src="https://shields.io" alt="Automation">
-  <img src="https://shields.io" alt="Architecture">
-</p>
+![Python](https://shields.io) ![Automation](https://shields.io) ![Architecture](https://shields.io)
 
 A deterministic mechatronics control loop engineered to mitigate systemic hardware overcurrent events (I²R Joule heating) and voltage sags through automated priority load shedding.
 
