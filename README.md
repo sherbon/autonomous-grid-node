@@ -36,11 +36,11 @@ A deterministic mechatronics control loop engineered to mitigate systemic hardwa
 
 When heavy industrial actuators or grid inverters switch on from a zero-spin state, their static inertia creates near-zero initial internal resistance (R → 0). According to **Ohm's Law**, this drops systemic bus voltage and spikes electric current lines:
 
-\[I = \frac{V}{R}\]
+$$I = \frac{V}{R}$$
 
 Left unchecked, heat energy generated within copper circuit board traces grows exponentially via **Joule Heating**, where power loss scales with the square of the current load:
 
-\[P = I^2 \times R\]
+$$P = I^2 \times R$$
 
 This system acts as a digital barrier against physical thermal breakdowns and voltage sag faults by implementing algorithmic priority overrides before analog fuses or breakers trip.
 
