@@ -1,6 +1,6 @@
 # ⚡ Autonomous Grid Telemetry Node
 
-![Python](https://shields.io) ![Automation](https://shields.io) ![Architecture](https://shields.io)
+`🔧 Engine: Python 3` • `🧠 Domain: Systems Automation` • `🧱 Stack: Modular Edge`
 
 A deterministic mechatronics control loop engineered to mitigate systemic hardware overcurrent events (I²R Joule heating) and voltage sags through automated priority load shedding.
 
