@@ -2,14 +2,26 @@ import time
 import random
 from signal_filter import MovingAverageFilter
 
-TRIP_AMPS = 95          # shed above this filtered current
+TRIP_AMPS = 95          # shed above this current
 RECOVER_AMPS = 80       # re-engage only if predicted load is below this
 ROBOT_LINE_AMPS = 40    # assumed current drawn by the Priority 3 robot line
+TICKS_TO_TRIP = 2       # raw readings in a row over TRIP_AMPS before shedding
+
+
+def decide(smoothed_load, robot_line_active, ticks_over):
+    """Return the new robot_line_active state."""
+    if robot_line_active and smoothed_load > TRIP_AMPS and ticks_over >= TICKS_TO_TRIP:
+        return False
+    if not robot_line_active and smoothed_load + ROBOT_LINE_AMPS < RECOVER_AMPS:
+        return True
+    return robot_line_active
+
 
 def run_automation_loop():
     print("=== SHATLER POWER INFRASTRUCTURE INTERFACE ONLINE ===")
     data_filter = MovingAverageFilter(window_size=3)
     robot_line_active = True
+    ticks_over = 0
 
     for tick in range(1, 21):
         if 5 <= tick <= 10:
@@ -19,20 +31,24 @@ def run_automation_loop():
         else:
             raw_load = random.randint(65, 80)
 
-        # CLOSED LOOP: shedding really removes the robot line's current
         if not robot_line_active:
             raw_load -= ROBOT_LINE_AMPS
 
+        # count consecutive raw readings over the limit (a lone spike resets next tick)
+        if raw_load > TRIP_AMPS:
+            ticks_over += 1
+        else:
+            ticks_over = 0
+
         smoothed_load = data_filter.filter_noise(raw_load)
 
-        # Decide first, print after, so the status matches the numbers
+        new_state = decide(smoothed_load, robot_line_active, ticks_over)
         message = None
-        if smoothed_load > TRIP_AMPS and robot_line_active:
-            robot_line_active = False
-            message = " >> ALERT: Current surge detected. Dropping Priority 3 systems!"
-        elif not robot_line_active and smoothed_load + ROBOT_LINE_AMPS < RECOVER_AMPS:
-            robot_line_active = True
+        if robot_line_active and not new_state:
+            message = " >> ALERT: Sustained current surge. Dropping Priority 3 systems!"
+        elif not robot_line_active and new_state:
             message = " >> NOTICE: Predicted load is safe. Re-engaging hardware."
+        robot_line_active = new_state
 
         status = "NOMINAL" if robot_line_active else "SHEDDING ACTIVE"
         print(f"[TICK {tick:02d}] Raw: {raw_load}A | Filtered: {smoothed_load:.1f}A | Grid State: {status}")
@@ -41,6 +57,7 @@ def run_automation_loop():
 
         time.sleep(0.5)
 
+
 if __name__ == "__main__":
-    random.seed(1)   # same numbers every run, so your README log can be reproduced
+    random.seed(1)
     run_automation_loop()
