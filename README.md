@@ -66,7 +66,8 @@ This system acts as a digital barrier against physical thermal breakdowns and vo
 
 ### 1. Clone the environment
 ```bash
-git clone https://github.com
+git clone
+https://github.com/sherbon/autonomous-grid-node
 cd autonomous-grid-node
 ```
 
