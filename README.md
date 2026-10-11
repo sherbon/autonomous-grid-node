@@ -6,28 +6,33 @@ A deterministic mechatronics control loop engineered to mitigate systemic hardwa
 
 ---
 
-## 📺 Live System Execution Proof
-
+## 📺 Example Output
+Output of python src/load_shedder.py (random seed 1):
 ```text
-=== SHATLER POWER INFRASTRUCTURE INTERFACE ONLINE ===
-[TICK 01] Raw: 68A | Filtered: 68.0A | Grid State: NOMINAL
-[TICK 02] Raw: 65A | Filtered: 66.5A | Grid State: NOMINAL
-[TICK 03] Raw: 73A | Filtered: 68.7A | Grid State: NOMINAL
-[TICK 04] Raw: 72A | Filtered: 70.0A | Grid State: NOMINAL
-[TICK 05] Raw: 122A | Filtered: 89.0A | Grid State: NOMINAL
-[TICK 06] Raw: 119A | Filtered: 104.3A | Grid State: NOMINAL
- >> ALERT: Sustained current surge detected. Dropping Priority 3 systems!
-[TICK 07] Raw: 118A | Filtered: 119.7A | Grid State: SHEDDING ACTIVE
-[TICK 08] Raw: 132A | Filtered: 123.0A | Grid State: SHEDDING ACTIVE
-[TICK 09] Raw: 117A | Filtered: 122.3A | Grid State: SHEDDING ACTIVE
-[TICK 10] Raw: 133A | Filtered: 127.3A | Grid State: SHEDDING ACTIVE
-[TICK 11] Raw: 125A | Filtered: 125.0A | Grid State: SHEDDING ACTIVE
-[TICK 12] Raw: 70A | Filtered: 109.3A | Grid State: SHEDDING ACTIVE
-[TICK 13] Raw: 70A | Filtered: 88.3A | Grid State: SHEDDING ACTIVE
-[TICK 14] Raw: 70A | Filtered: 70.0A | Grid State: SHEDDING ACTIVE
- >> NOTICE: Bus load stabilized below safety threshold. Re-engaging hardware.
-[TICK 15] Raw: 71A | Filtered: 70.3A | Grid State: NOMINAL
-[TICK 16] Raw: 72A | Filtered: 71.0A | Grid State: NOMINAL
+== SHATLER POWER INFRASTRUCTURE INTERFACE ONLINE ===
+[TICK 01] Raw: 69A | Filtered: 69.0A | Grid State: NOMINAL
+[TICK 02] Raw: 67A | Filtered: 68.0A | Grid State: NOMINAL
+[TICK 03] Raw: 73A | Filtered: 69.7A | Grid State: NOMINAL
+[TICK 04] Raw: 68A | Filtered: 69.3A | Grid State: NOMINAL
+[TICK 05] Raw: 130A | Filtered: 90.3A | Grid State: NOMINAL
+[TICK 06] Raw: 129A | Filtered: 109.0A | Grid State: SHEDDING ACTIVE
+ >> ALERT: Sustained current surge. Dropping Priority 3 systems!
+[TICK 07] Raw: 90A | Filtered: 116.3A | Grid State: SHEDDING ACTIVE
+[TICK 08] Raw: 95A | Filtered: 104.7A | Grid State: SHEDDING ACTIVE
+[TICK 09] Raw: 87A | Filtered: 90.7A | Grid State: SHEDDING ACTIVE
+[TICK 10] Raw: 81A | Filtered: 87.7A | Grid State: SHEDDING ACTIVE
+[TICK 11] Raw: 25A | Filtered: 64.3A | Grid State: SHEDDING ACTIVE
+[TICK 12] Raw: 85A | Filtered: 63.7A | Grid State: SHEDDING ACTIVE
+[TICK 13] Raw: 25A | Filtered: 45.0A | Grid State: SHEDDING ACTIVE
+[TICK 14] Raw: 85A | Filtered: 65.0A | Grid State: SHEDDING ACTIVE
+[TICK 15] Raw: 38A | Filtered: 49.3A | Grid State: SHEDDING ACTIVE
+[TICK 16] Raw: 25A | Filtered: 49.3A | Grid State: SHEDDING ACTIVE
+[TICK 17] Raw: 39A | Filtered: 34.0A | Grid State: NOMINAL
+ >> NOTICE: Predicted load is safe. Re-engaging hardware.
+[TICK 18] Raw: 73A | Filtered: 45.7A | Grid State: NOMINAL
+[TICK 19] Raw: 72A | Filtered: 61.3A | Grid State: NOMINAL
+[TICK 20] Raw: 68A | Filtered: 71.0A | Grid State: NOMINAL
+
 ```
 
 ---
@@ -48,31 +53,38 @@ This system acts as a digital barrier against physical thermal breakdowns and vo
 
 ---
 
-## 🧱 Production Code Architecture
+## 🧱 Code Architecture
 
 <details>
 <summary>📂 View Project Directory Map (Click to Expand)</summary>
 
 *   **`src/signal_filter.py`**: A specialized low-pass filtering object utilizing a 3-tick window array to calculate rolling mathematical trends and suppress physical sensor circuit wire noise.
 *   **`src/load_shedder.py`**: The executive 20-tick monitoring state-machine tracking deterministic grid threshold variations and recovery thresholds.
+*   **`tests/test_load_shedder.py`**: automated tests for the shedding decision and the filter.
 *   **`.gitignore`**: Global environment safety config explicitly blocking machine cache noise footprints (`__pycache__/`) from polluting the workspace tree structure.
 *   **`LICENSE`**: Licensed under the universally standard open-source **MIT License** layout.
-
+*   **`pytest.ini`**: tells pytest where to find the source code.
 </details>
 
 ---
 
 ## 🚀 How to Run Locally
 
-### 1. Clone the environment
+### 1. Clone the repository
 ```bash
-git clone
-https://github.com/sherbon/autonomous-grid-node
+git clone https://github.com/sherbon/autonomous-grid-node
 cd autonomous-grid-node
 ```
 
-### 2. Execute the Control Loop Node
-Ensure you have Python 3 installed locally, then launch the core system driver:
+### 2. Run the simulation
+Requires Python 3. The run takes about 10 seconds (0.5 s per tick).
 ```bash
 python src/load_shedder.py
+```
+On Windows, use `py` instead of `python` if `python` isn't recognised.
+
+### 3. Run the tests
+```bash
+pip install pytest
+python -m pytest
 ```
