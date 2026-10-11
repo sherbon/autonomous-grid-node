@@ -104,3 +104,9 @@ On Windows, use `py` instead of `python` if `python` isn't recognised.
 pip install pytest
 python -m pytest
 ```
+
+## 🔍 Known Limitations & Future Roadmap
+* **Filter Delay:** The moving-average filter naturally introduces a 2-tick lag after sudden load changes.
+* **No Critical Bypass:** The system lacks an instantaneous trip for massive, immediate spikes (e.g., dead shorts).
+* **Single Load Modelling:** Only one load layer (Priority 3) is simulated; industrial grids use multi-tier shedding arrays.
+* **Simulation Scope:** All values are purely simulated for educational logic flow and are not safety-rated.
